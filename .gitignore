@@ -1,0 +1,7 @@
+myvenv
+dataset
+model_traning.ipynb
+myvenv/
+.env
+.env.*
+!.env.example
