@@ -1,0 +1,178 @@
+:root {
+  --bg:       #0a0a0f;
+  --surface:  #13131a;
+  --elevated: #1c1c26;
+  --border:   rgba(255, 255, 255, 0.08);
+  --text:     #f0f0f0;
+  --muted:    rgba(255, 255, 255, 0.45);
+  --hint:     rgba(255, 255, 255, 0.25);
+  --accent:   #7F77DD;
+  --success:  #5DCAA5;
+  --error-col:#F09595;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px 80px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 520px;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 300;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full-width { grid-column: 1 / -1; }
+
+label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+input, select {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 10px 14px;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+input::placeholder { color: var(--hint); }
+
+input:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(127, 119, 221, 0.15);
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.btn-predict {
+  margin-top: 24px;
+  width: 100%;
+  padding: 13px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.btn-predict:hover { opacity: 0.88; }
+.btn-predict:active { transform: scale(0.98); }
+
+#result-card {
+  display: none;
+  margin-top: 24px;
+  background: rgba(93, 202, 165, 0.07);
+  border: 1px solid rgba(93, 202, 165, 0.25);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  text-align: center;
+}
+
+#result-card .result-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--success);
+  margin-bottom: 8px;
+}
+
+#result-card .result-value {
+  font-family: var(--font-mono);
+  font-size: 2.8rem;
+  font-weight: 500;
+  color: var(--success);
+  line-height: 1;
+}
+
+#result-card .result-unit {
+  font-size: 0.85rem;
+  color: rgba(93, 202, 165, 0.6);
+  margin-top: 6px;
+}
+
+#error-msg {
+  display: none;
+  margin-top: 20px;
+  background: rgba(240, 149, 149, 0.08);
+  border: 1px solid rgba(240, 149, 149, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--error-col);
+  font-size: 0.875rem;
+}
+
+.divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+@media (max-width: 480px) {
+  body { padding: 24px 12px 60px; }
+  .card { padding: 28px 20px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full-width { grid-column: 1; }
+  h1 { font-size: 1.35rem; }
+  #result-card .result-value { font-size: 2.2rem; }
+}
