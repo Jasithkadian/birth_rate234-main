@@ -3,7 +3,8 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-// These values should be in an .env file
+// Vite 8 requires VITE_ prefix for environment variables to be exposed to the client
+// and they must be used as import.meta.env.VITE_* for static replacement during build.
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -13,33 +14,14 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Check if Firebase config is valid
-const isFirebaseConfigValid = Object.entries(firebaseConfig).every(([key, val]) => {
-  if (val === undefined || val === "" || val === "your-api-key") {
-    console.warn(`Firebase Config Warning: ${key} is missing or has placeholder value.`);
-    return false;
-  }
-  return true;
+console.log("ENV:", import.meta.env);
+console.log("Firebase Config (Env):", {
+  apiKey: firebaseConfig.apiKey ? "Present" : "Missing",
+  projectId: firebaseConfig.projectId
 });
 
-if (!isFirebaseConfigValid) {
-  console.error("Firebase Configuration Error: Missing or invalid environment variables. Please check your .env file.");
-  console.log("Current Config (Masked):", {
-    apiKey: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.slice(0, 5)}...` : "MISSING",
-    projectId: firebaseConfig.projectId || "MISSING",
-    authDomain: firebaseConfig.authDomain || "MISSING"
-  });
-}
+const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase with fallback to prevent immediate app crash if config is missing
-const app = isFirebaseConfigValid ? initializeApp(firebaseConfig) : initializeApp({
-  apiKey: "dummy-key-for-initialization",
-  authDomain: "dummy-domain.firebaseapp.com",
-  projectId: "dummy-project-id",
-  appId: "1:1234567890:web:abcdef"
-});
-
-// Initialize Services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
