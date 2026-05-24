@@ -1,65 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Birth Weight Predictor</title>
+  <title>AI Healthcare Dashboard | Birth Weight</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=2.0">
 </head>
 <body>
-  <div class="card">
-    <div class="card-header">
-      <h1>Birth Weight Predictor</h1>
-      <p class="subtitle">Enter maternal data to estimate neonatal birth weight using a trained linear regression model.</p>
+  <div class="mesh-bg"></div>
+  <div class="particles" id="particles"></div>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <svg class="nav-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>NeoHealth AI</span>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Insights</a>
+      <a href="#">Reports</a>
+    </div>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+      <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </nav>
+
+  <main class="dashboard">
+    <div class="hero-section">
+      <div class="badge-ai">
+        <span class="pulse-dot"></span> AI-Powered Healthcare Prediction
+      </div>
+      <h1 class="gradient-heading">Predictive Neonatal Care</h1>
+      <p class="subtitle">Advanced machine learning analysis of maternal metrics to accurately estimate birth weight and identify potential health risks.</p>
     </div>
 
-    <div class="divider"></div>
+    <div class="dashboard-grid">
+      <!-- Input Card -->
+      <div class="card glass-panel form-card">
+        <form id="predict-form">
+          <div class="form-grid">
+            <div class="form-group floating">
+              <input type="number" id="gestation" name="gestation_month" placeholder=" " min="1" max="12" step="1" required>
+              <label for="gestation">Pregnancy Month</label>
+            </div>
+            <div class="form-group floating">
+              <input type="number" id="parity" name="parity" placeholder=" " min="0" max="15" step="1" required>
+              <label for="parity">Parity (Prior Births)</label>
+            </div>
+            <div class="form-group floating">
+              <input type="number" id="age" name="age" placeholder=" " min="15" max="55" step="1" required>
+              <label for="age">Maternal Age (Years)</label>
+            </div>
+            <div class="form-group floating">
+              <input type="number" id="height" name="height_m" placeholder=" " min="1.0" max="2.5" step="0.01" required>
+              <label for="height">Height (Meters)</label>
+            </div>
+            <div class="form-group floating full-width">
+              <input type="number" id="weight" name="weight_kg" placeholder=" " min="30" max="250" step="0.1" required>
+              <label for="weight">Pre-pregnancy Weight (Kilograms)</label>
+            </div>
+            <div class="form-group full-width">
+              <label class="static-label">Smoking Status</label>
+              <div class="radio-group">
+                <label class="radio-card">
+                  <input type="radio" name="smoke" value="0" required checked>
+                  <span class="radio-content">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Non-Smoker
+                  </span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="smoke" value="1" required>
+                  <span class="radio-content">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Smoker
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
 
-    <form id="predict-form">
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="gestation">Gestation <span class="unit">days</span></label>
-          <input type="number" id="gestation" name="gestation" placeholder="e.g. 280" min="140" max="315" step="1" required>
-        </div>
-        <div class="form-group">
-          <label for="parity">Parity <span class="unit">prior births</span></label>
-          <input type="number" id="parity" name="parity" placeholder="e.g. 0" min="0" max="15" step="1" required>
-        </div>
-        <div class="form-group">
-          <label for="age">Age <span class="unit">years</span></label>
-          <input type="number" id="age" name="age" placeholder="e.g. 27" min="15" max="55" step="1" required>
-        </div>
-        <div class="form-group">
-          <label for="height">Height <span class="unit">inches</span></label>
-          <input type="number" id="height" name="height" placeholder="e.g. 64" min="48" max="76" step="0.5" required>
-        </div>
-        <div class="form-group full-width">
-          <label for="weight">Weight <span class="unit">lbs (pre-pregnancy)</span></label>
-          <input type="number" id="weight" name="weight" placeholder="e.g. 130" min="80" max="300" step="1" required>
-        </div>
-        <div class="form-group full-width">
-          <label for="smoke">Smoking Status</label>
-          <select id="smoke" name="smoke" required>
-            <option value="" disabled selected>Select status…</option>
-            <option value="0">Non-smoker</option>
-            <option value="1">Smoker</option>
-          </select>
-        </div>
+          <button type="submit" class="btn-primary" id="submit-btn">
+            <span class="btn-text">Run AI Analysis</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div class="loader-spinner"></div>
+          </button>
+        </form>
       </div>
 
-      <button type="submit" class="btn-predict">Predict Birth Weight</button>
-    </form>
+      <!-- Results & Widgets -->
+      <div class="results-column">
+        <!-- Main Result Card -->
+        <div id="result-wrapper" class="card glass-panel hidden">
+          <div class="result-header">
+            <h3>Prediction Results</h3>
+            <span id="health-badge" class="status-badge">Analyzing...</span>
+          </div>
+          
+          <div class="prediction-display">
+            <div class="weight-circle">
+              <svg viewBox="0 0 100 100" class="circular-chart">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="circle" id="weight-progress" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div class="weight-value">
+                <span id="result-counter">0</span>
+                <span class="unit">oz</span>
+              </div>
+            </div>
+            
+            <div class="result-details">
+              <div class="detail-item">
+                <span class="detail-label">AI Confidence</span>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" id="confidence-bar" style="width: 0%"></div>
+                </div>
+                <span class="detail-value" id="confidence-val">--%</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Interpretation</span>
+                <p id="ai-explanation" class="explanation-text">Waiting for analysis...</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <div id="result-card">
-      <p class="result-label">Estimated Birth Weight</p>
-      <p class="result-value" id="result">—</p>
-      <p class="result-unit">ounces (oz)</p>
+        <!-- Widgets Grid -->
+        <div class="widgets-grid hidden" id="widgets-grid">
+          <div class="widget card glass-panel mini">
+            <div class="widget-icon risk-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="widget-info">
+              <h4>Risk Analysis</h4>
+              <p id="risk-level">Pending</p>
+            </div>
+          </div>
+          <div class="widget card glass-panel mini">
+            <div class="widget-icon health-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div class="widget-info">
+              <h4>Maternal Score</h4>
+              <p id="maternal-score">--/100</p>
+            </div>
+          </div>
+          <div class="widget card glass-panel mini full-width-widget">
+             <h4>Pregnancy Progress</h4>
+             <div class="timeline">
+               <div class="timeline-track"></div>
+               <div class="timeline-progress" id="timeline-progress" style="width:0%"></div>
+             </div>
+             <p class="timeline-label" id="timeline-label">Month 0 of 9</p>
+          </div>
+        </div>
+
+      </div>
     </div>
-    <div id="error-msg"></div>
-  </div>
-  <script src="/static/script.js"></script>
+  </main>
+
+  <div id="toast-container"></div>
+  
+  <script src="/static/script.js?v=2.0"></script>
 </body>
 </html>

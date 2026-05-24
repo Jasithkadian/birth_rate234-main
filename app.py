@@ -1,15 +1,27 @@
-from flask import Flask, render_template, request, jsonify
+import os
+from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask_cors import CORS
 import pandas as pd
 import pickle
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend/dist/assets', template_folder='frontend/dist')
+CORS(app) # Enable CORS for all routes
 
 # Load trained model at module level
 with open('model.pkl', 'rb') as obj:
     model = pickle.load(obj)
 
 def get_clean_data(form_data):
-    gestation = float(form_data['gestation'])
+    # Support both 'gestation' (days) and 'month' (1-10)
+    gestation_val = form_data.get('gestation') or form_data.get('month')
+    if not gestation_val: raise ValueError("Gestation or Month missing")
+    
+    gestation = float(gestation_val)
+    
+    # If input is likely a month (1-10), convert to days
+    if 1 <= gestation <= 12:
+        gestation = gestation * 30 
+        
     parity = int(form_data['parity'])
     age = int(form_data['age'])
     height = float(form_data['height'])
@@ -17,11 +29,11 @@ def get_clean_data(form_data):
     smoke = float(form_data['smoke'])
 
     # Range validation
-    if not (140 <= gestation <= 315): raise ValueError("Gestation out of range")
+    if not (20 <= gestation <= 450): raise ValueError("Gestation out of range")
     if not (0 <= parity <= 15): raise ValueError("Parity out of range")
     if not (15 <= age <= 55): raise ValueError("Age out of range")
-    if not (48 <= height <= 76): raise ValueError("Height out of range")
-    if not (80 <= weight <= 300): raise ValueError("Weight out of range")
+    if not (30 <= height <= 100): raise ValueError("Height out of range")
+    if not (50 <= weight <= 600): raise ValueError("Weight out of range")
     if smoke not in [0, 1]: raise ValueError("Invalid smoke status")
 
     cleaned_data = {
@@ -34,6 +46,15 @@ def get_clean_data(form_data):
     }
 
     return cleaned_data
+
+# Serve static files from the dist root (like favicon, robots.txt, etc.)
+@app.route('/<path:path>', methods=['GET'])
+def static_proxy(path):
+    dist_root = os.path.join(app.root_path, 'frontend', 'dist')
+    if os.path.exists(os.path.join(dist_root, path)):
+        return send_from_directory(dist_root, path)
+    else:
+        return render_template('index.html')
 
 @app.route('/', methods=['GET'])
 def home():
